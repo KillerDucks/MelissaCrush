@@ -1,0 +1,7 @@
+FROM node:8-alpine
+WORKDIR /usr/src/app/
+COPY ["package.json", "npm-shrinkwrap.json*", "./"]
+RUN npm i
+COPY . .
+EXPOSE 9000
+CMD pwd && ls && node bot.js

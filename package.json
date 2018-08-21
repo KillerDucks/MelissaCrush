@@ -1,0 +1,19 @@
+{
+  "name": "melissacrush",
+  "version": "1.0.0",
+  "description": "A simple Twitch Bot",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "TwitchBot"
+  ],
+  "author": "KillerDucks",
+  "license": "MIT",
+  "dependencies": {
+    "app-root-path": "^2.1.0",
+    "chokidar": "^2.0.4",
+    "tmi.js": "^1.2.1"
+  }
+}

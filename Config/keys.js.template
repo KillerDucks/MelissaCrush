@@ -1,0 +1,12 @@
+// This is a template for a keys.js file 
+// Populate the missing data
+// Rename the file to keys.js before starting the bot
+
+Keys = {
+    Twitch: {
+        Username: "<insert Username>",
+        oAuth: "<insert oAuth Password>"
+    }
+}
+
+module.exports = Keys;
