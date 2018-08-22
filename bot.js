@@ -21,6 +21,9 @@ const fs = require('fs');
 // Chokidar
 const chokidar = require('chokidar');
 
+// Haikudos
+const haikudos = require('haikudos');
+
 ///////////////////// Lib Conf
 
 // Set up TMI
@@ -91,6 +94,18 @@ client.on("chat", function (channel, userstate, message, self) {
     // Auto Moderation Hook TBI
     // !# To Be Implemented
 
+    // Random chance of the bot spitting out a haiku
+    let randomInt = getRandomInt(0, 10);
+    let randomInt2 = getRandomInt(0, 10);
+    if(randomInt == getRandomInt(0, 10)){
+        haikudos(function(haiku) {
+            client.say("speedoflightpen", haiku);
+        });
+    }
+    if(randomInt2 == getRandomInt(0, 10)){
+        cmd.get("discord").run(client, message, userstate, null);
+    }
+
     //Check if message has the serverPrefix
     if(!message.startsWith(Config.Commands.Prefix)) return;
     // Explode the Message down to parameters keeping quotes
@@ -133,33 +148,22 @@ function LoadCommands(fileChange = null)
 {
     if(fileChange){
         prettyLog("Bot::LoadCommands", `Searching for: ${fileChange}`)
-        let justFilename = fileChange.split("/")[fileChange.split("/").length - 1];
+        let justFilename = fileChange.split("\\")[fileChange.split("\\").length - 1]; // Windows file Paths !# Change for OS independent
         prettyLog("Bot::LoadCommands", `Searching for: ${justFilename}`)
-        for (const key in commands) {
-            // console.log(commands[key])
-            if (commands[key].FileName == justFilename) {
-                    try {
-                        let meta = require(__dirname + '/Core/Commands/' + justFilename);
-                        showObj(meta)
-                        if(meta.help.name == undefined){
-                            prettyLog("Bot::LoadCommands", `Skipping: ${justFilename}`)
-                            return;
-                        } 
-                        prettyLog("Bot::LoadCommands", `Reloading ${justFilename}`);            
-                        cmd.set(meta.help.name, meta);
-                        prettyLog("Bot::LoadCommands", `Name: ${meta.help.name}, Info: ${meta.help.Info}`);            
-                        commands.push({
-                            Name: meta.help.name,
-                            Info: meta.help.Info,
-                            FileName: justFilename
-                        });
-                    } catch (error) {
-                        prettyLog("Bot::LoadCommands", `[Error] Failed at file: ${f}`); 
-                        prettyLog("Bot::LoadCommands", "[Error] Failed to Reload Command"); 
-                        prettyLog("Bot::LoadCommands", "[Error] " + error.message); 
-                        return;
-                    }
-            }
+        let sentCmd = justFilename.split(".").pop();
+        let foundCommand = cmd.get(sentCmd);
+        if(foundCommand){
+            // if found delete command
+            cmd.delete(sentCmd);
+            // add the command back in
+            let meta = require(fileChange);
+            prettyLog("Bot::LoadCommands", `DEBUGGING::ReMeta ${meta.help.name}`);
+            cmd.set(meta.help.name, meta);
+        } else {
+            // Treat as a new command and add it to the pool
+            let meta = require(fileChange);
+            prettyLog("Bot::LoadCommands", `DEBUGGING::NewMeta ${meta.help.name}`);
+            cmd.set(meta.help.name, meta);
         }
     } else {
         try {
@@ -208,6 +212,12 @@ function LoadCommands(fileChange = null)
             process.exit(0);
         }
     }
+}
+
+function getRandomInt(min = 2, max = 97) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
 }
 
 ///////////////////// Other/Comments
