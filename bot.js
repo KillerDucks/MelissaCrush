@@ -96,13 +96,13 @@ client.on("chat", function (channel, userstate, message, self) {
 
     // Random chance of the bot spitting out a haiku
     let randomInt = getRandomInt(0, 10);
-    let randomInt2 = getRandomInt(0, 10);
+    let randomInt2 = getRandomInt(0, 20);
     if(randomInt == getRandomInt(0, 10)){
         haikudos(function(haiku) {
             client.say("speedoflightpen", haiku);
         });
     }
-    if(randomInt2 == getRandomInt(0, 10)){
+    if(randomInt2 == getRandomInt(0, 20)){
         cmd.get("discord").run(client, message, userstate, null);
     }
 
@@ -150,15 +150,21 @@ function LoadCommands(fileChange = null)
         prettyLog("Bot::LoadCommands", `Searching for: ${fileChange}`)
         let justFilename = fileChange.split("\\")[fileChange.split("\\").length - 1]; // Windows file Paths !# Change for OS independent
         prettyLog("Bot::LoadCommands", `Searching for: ${justFilename}`)
-        let sentCmd = justFilename.split(".").pop();
+        let sentCmd = justFilename.split(".")[0];
+        prettyLog("Bot::LoadCommands", `Searching cmd for: ${sentCmd}`)        
         let foundCommand = cmd.get(sentCmd);
         if(foundCommand){
             // if found delete command
             cmd.delete(sentCmd);
-            // add the command back in
-            let meta = require(fileChange);
-            prettyLog("Bot::LoadCommands", `DEBUGGING::ReMeta ${meta.help.name}`);
-            cmd.set(meta.help.name, meta);
+            // Check if the command is deleted
+            if(!cmd.has(sentCmd)){
+                // add the command back in
+                let meta = require(fileChange);
+                prettyLog("Bot::LoadCommands", `DEBUGGING::ReMeta ${meta.help.name}`);
+                cmd.set(meta.help.name, meta);
+            } else {
+                prettyLog("Bot::LoadCommands", `DEBUGGING Unable to delete the command ${sentCmd}`);
+            }
         } else {
             // Treat as a new command and add it to the pool
             let meta = require(fileChange);
