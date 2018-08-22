@@ -15,6 +15,7 @@
     "app-root-path": "^2.1.0",
     "chokidar": "^2.0.4",
     "haikudos": "^1.0.7",
+    "hoek": "^4.2.1",
     "tmi.js": "^1.2.1"
   }
 }
